@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "strict": true,
+        "outDir": "./build",
+        "sourceMap": true
+    },
+    "include": [
+        "./app/**/*.ts",
+        "./app/*.ts",
+        "./tests/**/*.ts",
+        "./tests/*.ts",
+    ],
+    "exclude": [
+        "./node_modules"
+    ],
+    "compileOnSave": true,
+    "buildOnSave": true,
+}

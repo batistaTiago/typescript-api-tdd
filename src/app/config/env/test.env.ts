@@ -1,12 +1,13 @@
 module.exports = {
-    env: 'test',
-    db: 'api_database_tests',
+    dbName: 'api_database_tests',
+    environment: 'development',
     dialect: 'postgres',
     username: 'postgres',
     password: 'pg_password',
     host: 'localhost',
     serverPort: 3000,
-    pgPort: 5432,
-    dbUrl: 'postgres://postgres:pgroot@localhost:5432/api_database_tests',
-    secret: 'super_secret_key'
+    pgPort: 8420,
+    dbUrl: `postgres://postgres@localhost:8420/api_database_tests`,
+    secret: 'super_secret_key',
+    logging: false,
 }

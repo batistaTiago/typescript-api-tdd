@@ -3,6 +3,8 @@ version: "3"
 networks:
   base-api:
 
+volumes:
+  pgdata:
 
 services:
   postgres:
@@ -12,21 +14,20 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pg_password
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_DB=api_database
     volumes:
-      - ./pgdata:/var/lib/postgresql
+      - pgdata:/var/lib/postgresql
     ports:
       - "8420:5432"
 
-  base_api:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    networks:
-      - base-api
-    volumes:
-      - ./src:/home/user/base-api
-    ports:
-      - "3420:3000"
-    depends_on:
-      - postgres
+  # base_api:
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile
+    # networks:
+    #   - base-api
+    # volumes:
+    #   - ./src:/home/user/base-api
+    # ports:
+    #   - "3420:3000"
+    # depends_on:
+    #   - postgres

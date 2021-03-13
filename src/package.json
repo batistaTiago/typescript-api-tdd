@@ -6,9 +6,9 @@
   "repository": {},
   "scripts": {
     "start": "SET NODE_ENV=development&& ./node_modules/.bin/ts-node ./app/server.ts",
-    "builded": "SET NODE_ENV=development&& nodemon ./build/server.js",
+    "builded": "SET NODE_ENV=development&& nodemon ./build/app/server.js",
     "unit-tests": "SET NODE_ENV=test&& mocha ./build/tests/unit/unit.test.js",
-    "acceptance-tests": "SET NODE_ENV=test&& mocha ./build/tests/acceptance/acceptance.test.js",
+    "acceptance-tests": "SET NODE_ENV=test&& mocha ./build/tests/acceptance/user-acceptance.test.js",
     "test": "SET NODE_ENV=test&& mocha ./build/tests/unit/unit.test.js && mocha ./build/tests/acceptance/acceptance.test.js"
   },
   "author": "Tiago Batista",
@@ -20,7 +20,8 @@
     "morgan": "^1.10.0",
     "pg": "^8.5.1",
     "sequelize": "^6.5.0",
-    "sequelize-cli": "^6.2.0"
+    "sequelize-cli": "^6.2.0",
+    "typescript": "^4.2.3"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.0",

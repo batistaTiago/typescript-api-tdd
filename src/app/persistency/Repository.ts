@@ -1,4 +1,3 @@
-import { Knex } from "knex";
 import DB from "./DB";
 
 export default class Repository {

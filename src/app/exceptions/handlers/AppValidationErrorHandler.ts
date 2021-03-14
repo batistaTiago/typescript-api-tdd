@@ -5,15 +5,9 @@ class AppValidationErrorHandler {
     public static handle(err: AppValidationError, req, res, next) {
         if (err.getType() == 'AppValidationError') {
 
-            let details = {};
-
-            if (Array.isArray(err.errorData)) {
-                for (let item of err.errorData) {
-                    details[item.name] = item.messages;
-                }
-            } else {
-                details[err.errorData.name] = err.errorData.messages;
-            }
+            const details = {};
+            
+            details[err.errorData.field] = err.errorData.message;
 
             return res.status(HTTPStatus.NOT_ACCEPTABLE).json({
                 success: false,

@@ -40,59 +40,42 @@ export class UserController {
 
     public async create(request: Request, response: Response, next) {
         if (!request.body.name) {
-            /* @TODO: should throw validation error, which should send the json below */
+            const field = 'name';
+            const message = 'The name field is required';
+            next(new AppValidationError({ field, message }));
+        }
 
-            const errorData = [
-                {
-                    name: 'name',
-                    messages: ['The field name is required']
-                }
-            ];
-
-            next(new AppValidationError(errorData));
+        if ((!request.body.email)) {
+            const field = 'email';
+            const message = 'The password field is required';
+            next(new AppValidationError({ field, message }));
         }
 
         const emailRegex = /\S+@\S+\.\S+/;
         if (!emailRegex.test(request.body.email)) {
-            /* @TODO: should throw validation error, which should send the json below */
-            return response.status(HTTPStatus.NOT_ACCEPTABLE).send({
-                success: false,
-                message: 'Error',
-                details: {
-                    email: [
-                        'The field email is invalid, please use "user@provider.ext" format.'
-                    ]
-                }
-            });
+            const field = 'email';
+            const message = 'The email field is invalid, please use "user@provider.ext" format.';
+            next(new AppValidationError({ field, message }));
         }
 
-        if ((!request.body.password) || (request.body.password.length < 6)) {
-            return response.status(HTTPStatus.NOT_ACCEPTABLE).send({
-                success: false,
-                message: 'Error',
-                details: {
-                    password: [
-                        'The field password is invalid.'
-                    ]
-                }
-            });
+        if ((!request.body.password)) {
+            const field = 'password';
+            const message = 'The password field is required';
+            next(new AppValidationError({ field, message }));
+        }
+
+        if ((request.body.password.length < 6)) {
+            const field = 'password';
+            const message = 'The password field is invalid';
+            next(new AppValidationError({ field, message }));
         }
 
         if ((!request.body.password_confirmation) || (request.body.password != request.body.password_confirmation)) {
-            /* @TODO: should throw validation error, which should send the json below */
-            return response.status(HTTPStatus.NOT_ACCEPTABLE).send({
-                success: false,
-                message: 'Error',
-                details: {
-                    password: [
-                        'The passwords do not match..'
-                    ]
-                }
-            });
+            const field = 'password';
+            const message = 'The password and password confirmation do not match';
+            next(new AppValidationError({ field, message }));
         }
 
-
-        // try {
         const { name, email, password } = request.body;
         const user = await models.User.create({
             name, email, password
@@ -103,12 +86,6 @@ export class UserController {
             message: 'User created successfully',
             data: user
         });
-        // } catch (e) {
-        //     return response.status(HTTPStatus.INTERNAL_SERVER_ERROR).send({
-        //         success: false,
-        //         message: 'Error'
-        //     });
-        // }
     }
 
     public async update(request: Request, response: Response) {

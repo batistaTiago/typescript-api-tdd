@@ -3,7 +3,7 @@ import IValidationErrorData from "./interfaces/IValidationErrorData";
 
 export class AppValidationError extends AppBaseError {
 
-    constructor(public errorData: IValidationErrorData | IValidationErrorData[]) { 
+    constructor(public errorData: IValidationErrorData) { 
         super();
     }
 }

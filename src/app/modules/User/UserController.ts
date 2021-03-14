@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as HTTPStatus from 'http-status';
+import { AppValidationError } from '../../exceptions/AppValidationError';
 import UserRepository from './UserRepository';
 const models = require('../../models');
 export class UserController {
@@ -37,18 +38,18 @@ export class UserController {
         });
     }
 
-    public async create(request: Request, response: Response) {
+    public async create(request: Request, response: Response, next) {
         if (!request.body.name) {
             /* @TODO: should throw validation error, which should send the json below */
-            return response.status(HTTPStatus.NOT_ACCEPTABLE).send({
-                success: false,
-                message: 'Error',
-                details: {
-                    name: [
-                        'The field name is required'
-                    ]
+
+            const errorData = [
+                {
+                    name: 'name',
+                    messages: ['The field name is required']
                 }
-            });
+            ];
+
+            next(new AppValidationError(errorData));
         }
 
         const emailRegex = /\S+@\S+\.\S+/;

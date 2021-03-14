@@ -1,12 +1,9 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { AppError } from '../exceptions/apperror';
 import { Application } from 'express';
-import { errorHandler } from '../exceptions/handler';
+import { errorHandler } from '../exceptions/Handler';
 import Routes from './routes/routes';
 import UserRoutes from "../modules/User/Routes";
-
-import * as morgan from 'morgan';
 
 class Api {
     public express: Application;
@@ -17,17 +14,14 @@ class Api {
     }
 
     public middleware(): void {
-        // this.express.use(morgan('dev'));
-
         this.express.use(bodyParser.urlencoded({ extended: true }));
         this.express.use(bodyParser.json());
+        
+        this.initRoutes(this.express);
 
         this.express.use((err, req, res, next) => {
-            console.log(`Error handler vai ser executado...`);
             errorHandler(err, res);
         });
-
-        this.initRoutes(this.express);
     }
 
     private initRoutes(app: Application): void {

@@ -139,6 +139,19 @@ describe('User Management Test', () => {
                         });
                 });
         });
+
+        it('Should return json with success equals false if the id is not an integer', (done) => {
+            request(app).get(`/api/v1/users/something_else`)
+                .end((err: any, res: any) => {
+                    expect(res.status).to.equal(HTTPStatus.BAD_REQUEST);
+
+                    expect(res.body.success).to.equal(false);
+
+                    expect(res.body.message.toLowerCase()).to.contain('integer');
+
+                    done(err);
+                });
+        });
     });
 
     describe('POST /api/v1/users/', () => {

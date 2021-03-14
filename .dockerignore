@@ -1,4 +1,4 @@
-./src/node_modules
-./src/build
+./node_modules
+./build
 ./pgdata
 npm-debug.log

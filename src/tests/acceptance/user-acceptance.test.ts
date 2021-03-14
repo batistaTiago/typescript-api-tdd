@@ -1,4 +1,5 @@
 import { app, request, expect } from './config/helpers';
+import * as HTTPStatus from 'http-status';
 
 describe('User Management Test', () => {
 
@@ -33,16 +34,38 @@ describe('User Management Test', () => {
         it('Should return json with success equals true and an array of users', (done) => {
             request(app).get('/api/v1/users')
                 .end((err: any, res: any) => {
-                    expect(res.status).to.equal(200);
+                    expect(res.status).to.equal(HTTPStatus.OK);
+
+                    expect(res.body.success).to.equal(true);
+
+                    expect(res.body.data).to.be.an('array');
+
+                    expect(res.body.data.length).to.equal(2);
+                    expect(res.body.count).to.equal(2);
 
                     expect(res.body.data[0].id).to.equal(defaultUser.id);
                     expect(res.body.data[0].name).to.equal(defaultUser.name);
 
-                    expect(res.body.data).to.be.an('array');
-                    expect(res.body.data.length).to.equal(2);
-                    expect(res.body.count).to.equal(2);
-
                     done(err);
+                });
+        });
+
+        it('Should return json with success equals true and an empty array in case there are no users in the database', (done) => {
+            models.User.destroy({ where: {} })
+                .then(() => {
+                    request(app).get('/api/v1/users')
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.OK);
+
+                            expect(res.body.success).to.equal(true);
+
+                            expect(res.body.data).to.be.an('array');
+
+                            expect(res.body.data.length).to.equal(0);
+                            expect(res.body.count).to.equal(0);
+
+                            done(err);
+                        });
                 });
         });
     });
@@ -51,16 +74,35 @@ describe('User Management Test', () => {
         it('Should return json with success equals true and an array of filtered users', (done) => {
             request(app).get('/api/v1/users?search_query=default')
                 .end((err: any, res: any) => {
-                    expect(res.status).to.equal(200);
+                    expect(res.status).to.equal(HTTPStatus.OK);
+
+                    expect(res.body.success).to.equal(true);
+
+                    expect(res.body.data).to.be.an('array');
+
+                    expect(res.body.data.length).to.equal(1);
+                    expect(res.body.count).to.equal(1);
 
                     expect(res.body.data[0].id).to.equal(defaultUser.id);
                     expect(res.body.data[0].name).to.equal(defaultUser.name);
 
-                    expect(res.body.data).to.be.an('array');
-                    expect(res.body.data.length).to.equal(1);
-                    expect(res.body.count).to.equal(1);
-
                     done(err);
+                });
+        });
+        it('Should return json with success equals true and an empty array in case there are no users in the database', (done) => {
+            models.User.destroy({ where: {} })
+                .then(() => {
+                    request(app).get('/api/v1/users?search_query=default')
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.OK);
+
+                            expect(res.body.success).to.equal(true);
+
+                            expect(res.body.data).to.be.an('array');
+                            expect(res.body.data.length).to.equal(0);
+                            expect(res.body.count).to.equal(0);
+                            done(err);
+                        });
                 });
         });
     });
@@ -69,7 +111,10 @@ describe('User Management Test', () => {
         it('Should return json with success equals true and the record for that user', (done) => {
             request(app).get(`/api/v1/users/1`)
                 .end((err: any, res: any) => {
-                    expect(res.status).to.equal(200);
+                    expect(res.status).to.equal(HTTPStatus.OK);
+
+                    expect(res.body.success).to.equal(true);
+
                     expect(res.body.data).to.be.an('object');
 
                     expect(res.body.data.id).to.equal(defaultUser.id);
@@ -78,30 +123,158 @@ describe('User Management Test', () => {
                     done(err);
                 });
         });
+
+        it('Should return json with success equals false and data equals null if the user does not exist', (done) => {
+            models.User.destroy({ where: {} })
+                .then(() => {
+                    request(app).get(`/api/v1/users/1`)
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.OK);
+
+                            expect(res.body.success).to.equal(false);
+
+                            expect(res.body.data).to.be.null;
+
+                            done(err);
+                        });
+                });
+        });
     });
 
     describe('POST /api/v1/users/', () => {
+        const newUserData = {
+            id: 2,
+            name: "new test user",
+            email: "newtestuser@acceptancetesting.com",
+            password: "novouserpass"
+        };
+
         it('Should return json with success equals true and the record for that newly created user', (done) => {
-
-            const newUserData = {
-                id: 2,
-                name: "new test user",
-                email: "newtestuser@acceptancetesting.com",
-                password: "novouserpass"
-            };
-
             request(app).post(`/api/v1/users`)
-                .send(newUserData)
+                .send({ ...newUserData, password_confirmation: newUserData.password })
                 .end((err: any, res: any) => {
-                    expect(res.status).to.equal(201);
+                    expect(res.status).to.equal(HTTPStatus.CREATED);
 
-                    expect(res.body.message).to.contain('success');
+                    expect(res.body.success).to.equal(true);
+
+                    expect(res.body.message.toLowerCase()).to.contain('success');
 
                     expect(res.body.data).to.be.an('object');
                     expect(res.body.data.name).to.equal(newUserData.name);
                     expect(res.body.data.email).to.equal(newUserData.email);
                     done(err);
                 });
+        });
+
+        describe('User POST Validation', () => {
+            describe('Name field validation', () => {
+                it('Is required', (done) => {
+                    request(app).post(`/api/v1/users`)
+                        .send({ ...newUserData, name: '' })
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
+
+                            expect(res.body.success).to.equal(false);
+
+                            expect(res.body.message.toLowerCase()).to.contain('error');
+
+                            expect(res.body.details).to.be.an('object');
+                            expect(res.body.details.name).to.be.an('array');
+                            expect(res.body.details.name.length).to.be.greaterThan(0);
+
+                            done(err);
+                        });
+                });
+            });
+            describe('Email field validation', () => {
+                it('Is required', (done) => {
+                    request(app).post(`/api/v1/users`)
+                        .send({ ...newUserData, email: '' })
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
+
+                            expect(res.body.success).to.equal(false);
+
+                            expect(res.body.message.toLowerCase()).to.contain('error');
+
+                            expect(res.body.details).to.be.an('object');
+                            expect(res.body.details.email).to.be.an('array');
+                            expect(res.body.details.email.length).to.be.greaterThan(0);
+
+                            done(err);
+                        });
+                });
+                it('Is a valid email address', (done) => {
+                    request(app).post(`/api/v1/users`)
+                        .send({ ...newUserData, email: 'some_non_email_string' })
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
+
+                            expect(res.body.success).to.equal(false);
+
+                            expect(res.body.message.toLowerCase()).to.contain('error');
+
+                            expect(res.body.details).to.be.an('object');
+                            expect(res.body.details.email).to.be.an('array');
+                            expect(res.body.details.email.length).to.be.greaterThan(0);
+
+                            done(err);
+                        });
+                });
+            });
+            describe('Password field validation', () => {
+                it('Is required', (done) => {
+                    request(app).post(`/api/v1/users`)
+                        .send({ ...newUserData, password: '' })
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
+
+                            expect(res.body.success).to.equal(false);
+
+                            expect(res.body.message.toLowerCase()).to.contain('error');
+
+                            expect(res.body.details).to.be.an('object');
+                            expect(res.body.details.password).to.be.an('array');
+                            expect(res.body.details.password.length).to.be.greaterThan(0);
+
+                            done(err);
+                        });
+                });
+                it('Is at least 6 characters long', (done) => {
+                    request(app).post(`/api/v1/users`)
+                        .send({ ...newUserData, password: '143' })
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
+
+                            expect(res.body.success).to.equal(false);
+
+                            expect(res.body.message.toLowerCase()).to.contain('error');
+
+                            expect(res.body.details).to.be.an('object');
+                            expect(res.body.details.password).to.be.an('array');
+                            expect(res.body.details.password.length).to.be.greaterThan(0);
+
+                            done(err);
+                        });
+                });
+                it('Needs confirmation', (done) => {
+                    request(app).post(`/api/v1/users`)
+                    .send({ ...newUserData, password_confirmation: '143' })
+                    .end((err: any, res: any) => {
+                        expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
+
+                        expect(res.body.success).to.equal(false);
+
+                        expect(res.body.message.toLowerCase()).to.contain('error');
+
+                        expect(res.body.details).to.be.an('object');
+                        expect(res.body.details.password).to.be.an('array');
+                        expect(res.body.details.password.length).to.be.greaterThan(0);
+
+                        done(err);
+                    });
+                });
+            });
         });
     });
 
@@ -116,17 +289,40 @@ describe('User Management Test', () => {
             request(app).patch(`/api/v1/users/1`)
                 .send(updateUserData)
                 .end((err: any, res: any) => {
-                    expect(res.status).to.equal(200);
+                    expect(res.status).to.equal(HTTPStatus.OK);
 
-                    expect(res.body.message).to.contain('success');
+                    expect(res.body.success).to.equal(true);
+
+                    expect(res.body.message.toLowerCase()).to.contain('success');
 
                     expect(res.body.data).to.be.an('object');
-                    
+
                     expect(res.body.data.id).to.equal(1); // cannot update id
                     expect(res.body.data.name).to.be.equal(defaultUser.name);
                     expect(res.body.data.email).to.be.equal(defaultUser.email);
                     done(err);
                 });
+        });
+
+        describe('User PATCH Validation', () => {
+            describe('Name field validation', () => {
+                it('Is null or string', (done) => {
+                    throw new Error('To be implemented...');
+                    done();
+                });
+            });
+            describe('Email field validation', () => {
+                it('Is null or a valid email address', (done) => {
+                    throw new Error('To be implemented...');
+                    done();
+                });
+            });
+            describe('Password field validation', () => {
+                it('Is null or at least 6 characters long', (done) => {
+                    throw new Error('To be implemented...');
+                    done();
+                });
+            });
         });
     });
 });

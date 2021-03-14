@@ -8,10 +8,8 @@
         "noImplicitAny": false
     },
     "include": [
-        "./app/**/*.ts",
-        "./app/*.ts",
-        "./tests/**/*.ts",
-        "./tests/*.ts",
+        "./src/**/*.ts",
+        "./src/*.ts",
     ],
     "exclude": [
         "./node_modules"

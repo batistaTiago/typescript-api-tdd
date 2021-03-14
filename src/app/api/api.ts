@@ -4,7 +4,7 @@ import { AppError } from '../exceptions/apperror';
 import { Application } from 'express';
 import { errorHandler } from '../exceptions/handler';
 import Routes from './routes/routes';
-import UserRoutes from "../modules/User/routes";
+import UserRoutes from "../modules/User/Routes";
 
 import * as morgan from 'morgan';
 

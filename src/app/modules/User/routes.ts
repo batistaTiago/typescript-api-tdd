@@ -1,19 +1,21 @@
-import { Application, Request, Response } from 'express';
-import { UserController } from './controller';
+import { Application } from 'express';
+import { UserController } from './UserController';
 
 class UserRoutes {
 
     private prefix: string = '/api/v1/users';
+    private controller: UserController;
 
     constructor(app: Application) {
-        this.getRoutes(app);
+        this.controller = new UserController();
+        this.initRoutes(app);
      }
 
-    public getRoutes(app: Application) {
-        app.route(`${this.prefix}`).get(UserController.getAll);
-        app.route(`${this.prefix}/:id`).get(UserController.find);
-        app.route(`${this.prefix}/`).post(UserController.create);
-        app.route(`${this.prefix}/:id`).patch(UserController.update);
+    public initRoutes(app: Application) {
+        app.route(`${this.prefix}`).get(this.controller.getAll);
+        app.route(`${this.prefix}/:id`).get(this.controller.find);
+        app.route(`${this.prefix}/`).post(this.controller.create);
+        app.route(`${this.prefix}/:id`).patch(this.controller.update);
     }
 }
 

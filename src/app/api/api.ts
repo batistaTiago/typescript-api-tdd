@@ -6,7 +6,16 @@ import { errorHandler } from '../exceptions/handler';
 import Routes from './routes/routes';
 import UserRoutes from "../modules/User/Routes";
 
+<<<<<<< Updated upstream
 import * as morgan from 'morgan';
+=======
+const AppValidationErrorHandler = require('../exceptions/handlers/AppValidationErrorHandler');
+const AppGenericErrorHandler = require('../exceptions/handlers/AppGenericErrorHandler');
+const AppInvalidRouteParameterError = require('../exceptions/handlers/AppInvalidRouteParameterErrorHandler');
+const fs = require('fs');
+const glob = require('glob');
+const path = require('path');
+>>>>>>> Stashed changes
 
 class Api {
     public express: Application;
@@ -27,12 +36,34 @@ class Api {
             errorHandler(err, res);
         });
 
+<<<<<<< Updated upstream
         this.initRoutes(this.express);
+=======
+        const normalizedPath = path.join(__dirname);
+
+        glob.sync(`${normalizedPath}/**/*`).forEach(function (file) {
+            console.log(path.resolve(file));
+        });
+
+        // this.express.use(AppValidationErrorHandler);
+        // this.express.use(AppInvalidRouteParameterError);
+        // this.express.use(AppGenericErrorHandler);
+>>>>>>> Stashed changes
     }
 
     private initRoutes(app: Application): void {
         new Routes(app);
         new UserRoutes(app);
+<<<<<<< Updated upstream
+=======
+        app.get('/error', () => {
+            throw new AppValidationError(
+                {
+                    field: 'email',
+                    message: 'Email is invalid'
+                });
+        });
+>>>>>>> Stashed changes
     }
 }
 

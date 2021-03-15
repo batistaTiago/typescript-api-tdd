@@ -9,7 +9,7 @@
     },
     "include": [
         "./src/**/*.ts",
-        "./src/*.ts",
+        "./src/*.ts", "src/app/extensions/index..dts",
     ],
     "exclude": [
         "./node_modules"

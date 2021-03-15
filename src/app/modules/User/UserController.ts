@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as HTTPStatus from 'http-status';
+import { AppInvalidRouteParameterError } from '../../exceptions/AppInvalidRouteParameterError';
 import { AppValidationError } from '../../exceptions/AppValidationError';
 import UserRepository from './UserRepository';
 const models = require('../../models');
@@ -19,17 +20,14 @@ export class UserController {
         });
     }
 
-    public async find(request: Request, response: Response) {
+    public async find(request: Request, response: Response, next: NextFunction) {
         const id = parseInt(request.params.id);
 
         if (isNaN(id)) {
-            /* @TODO: should throw validation error, which should send the json below */
-            return response.status(HTTPStatus.BAD_REQUEST).send({
-                success: false,
-                message: 'Route parameter should be an integer.',
-            });
+            next(new AppInvalidRouteParameterError('Route parameter should be an integer.'));
         }
-        const user = await UserRepository.findById(parseInt(request.params.id));
+
+        const user = await UserRepository.findById(id);
 
         return response.status(HTTPStatus.OK).send({
             success: !!user,
@@ -38,7 +36,8 @@ export class UserController {
         });
     }
 
-    public async create(request: Request, response: Response, next) {
+    public async create(request: Request, response: Response, next: NextFunction) {
+
         if (!request.body.name) {
             const field = 'name';
             const message = 'The name field is required';
@@ -47,12 +46,11 @@ export class UserController {
 
         if ((!request.body.email)) {
             const field = 'email';
-            const message = 'The password field is required';
+            const message = 'The email field is required';
             next(new AppValidationError({ field, message }));
         }
 
-        const emailRegex = /\S+@\S+\.\S+/;
-        if (!emailRegex.test(request.body.email)) {
+        if (!request.body.email.isValidEmail()) {
             const field = 'email';
             const message = 'The email field is invalid, please use "user@provider.ext" format.';
             next(new AppValidationError({ field, message }));
@@ -106,7 +104,11 @@ export class UserController {
             const updateCount = await models.User.update(set, filters);
 
             if (updateCount == 0) {
-                // @TODO: not found...
+                return response.status(HTTPStatus.OK).send({
+                    success: false,
+                    message: 'Resource not found: no users have been affected by this operation',
+                    data: null
+                });
             }
 
             const user = await models.User.findOne(filters);

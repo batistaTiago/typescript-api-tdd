@@ -4,7 +4,7 @@ import * as HTTPStatus from 'http-status';
 describe('User Management Test', () => {
 
     'use strict';
-    const config = require('../../app/config/env/config');
+    const config = require('../../app/config/env/sequelize.config');
     const models = require('../../app/models');
 
     let id;
@@ -143,6 +143,7 @@ describe('User Management Test', () => {
         it('Should return json with success equals false if the id is not an integer', (done) => {
             request(app).get(`/api/v1/users/something_else`)
                 .end((err: any, res: any) => {
+                    
                     expect(res.status).to.equal(HTTPStatus.BAD_REQUEST);
 
                     expect(res.body.success).to.equal(false);
@@ -159,12 +160,14 @@ describe('User Management Test', () => {
             id: 2,
             name: "new test user",
             email: "newtestuser@acceptancetesting.com",
-            password: "novouserpass"
+            password: "novouserpass",
+            password_confirmation: "novouserpass",
         };
 
         it('Should return json with success equals true and the record for that newly created user', (done) => {
             request(app).post(`/api/v1/users`)
-                .send({ ...newUserData, password_confirmation: newUserData.password })
+                .set('content-type', 'application/json')
+                .send({ ...newUserData })
                 .end((err: any, res: any) => {
                     expect(res.status).to.equal(HTTPStatus.CREATED);
 
@@ -219,6 +222,7 @@ describe('User Management Test', () => {
                 });
                 it('Is a valid email address', (done) => {
                     request(app).post(`/api/v1/users`)
+                        .set('content-type', 'application/json')
                         .send({ ...newUserData, email: 'an_invalid_email_address' })
                         .end((err: any, res: any) => {
                             expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
@@ -272,20 +276,20 @@ describe('User Management Test', () => {
                 });
                 it('Needs confirmation', (done) => {
                     request(app).post(`/api/v1/users`)
-                    .send({ ...newUserData, password_confirmation: '143' })
-                    .end((err: any, res: any) => {
-                        expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
+                        .send({ ...newUserData, password_confirmation: '143' })
+                        .end((err: any, res: any) => {
+                            expect(res.status).to.equal(HTTPStatus.NOT_ACCEPTABLE);
 
-                        expect(res.body.success).to.equal(false);
+                            expect(res.body.success).to.equal(false);
 
-                        expect(res.body.message.toLowerCase()).to.contain('error');
+                            expect(res.body.message.toLowerCase()).to.contain('error');
 
-                        expect(res.body.details).to.be.an('object');
-                        expect(res.body.details.password).to.be.a('string');
-                        expect(res.body.details.password).to.contain('do not match');
+                            expect(res.body.details).to.be.an('object');
+                            expect(res.body.details.password).to.be.a('string');
+                            expect(res.body.details.password).to.contain('do not match');
 
-                        done(err);
-                    });
+                            done(err);
+                        });
                 });
             });
         });
@@ -313,6 +317,26 @@ describe('User Management Test', () => {
                     expect(res.body.data.id).to.equal(1); // cannot update id
                     expect(res.body.data.name).to.be.equal(defaultUser.name);
                     expect(res.body.data.email).to.be.equal(defaultUser.email);
+                    done(err);
+                });
+        });
+
+        it('Should return json with success equals false and an error message if the user is not found', (done) => {
+
+            const updateUserData = {
+                ...defaultUser,
+                id: 2,
+            };
+
+            request(app).patch(`/api/v1/users/105`)
+                .send(updateUserData)
+                .end((err: any, res: any) => {
+                    expect(res.status).to.equal(HTTPStatus.OK);
+
+                    expect(res.body.success).to.equal(false);
+
+                    expect(res.body.message.toLowerCase()).to.contain('not found');
+
                     done(err);
                 });
         });

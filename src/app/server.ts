@@ -1,7 +1,11 @@
 import Api from './api/api';
+const bootstrapExtensions = require('./extensions');
+
 
 const models = require('./models'); // imports index file
-const config = require('./config/env/config')();
+const config = require('./config/env/sequelize.config')();
+
+bootstrapExtensions();
 
 models.sequelize.sync().then(() => {
     Api.listen(config.serverPort, () => {

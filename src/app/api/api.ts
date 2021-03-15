@@ -4,9 +4,8 @@ import { Application } from 'express';
 import Routes from './routes/routes';
 import UserRoutes from "../modules/User/Routes";
 import { AppValidationError } from '../exceptions/AppValidationError';
-
-const AppValidationErrorHandler = require('../exceptions/handlers/AppValidationErrorHandler');
-const AppGenericErrorHandler = require('../exceptions/handlers/AppGenericErrorHandler');
+const fs = require('fs');
+const path = require('path');
 
 class Api {
     public express: Application;
@@ -22,24 +21,27 @@ class Api {
 
         this.initRoutes(this.express);
 
-        this.express.use(AppValidationErrorHandler);
-        this.express.use(AppGenericErrorHandler);
+        const normalizedPath = path.join(__dirname, '../exceptions/handlers/');
+
+        /* auto loads exception handlers */
+        fs.readdirSync(normalizedPath)
+            .filter((file) => {
+                return (file.indexOf('.') !== 0) && (file.slice(-3) === '.js');
+            })
+            .forEach((file) => {
+                this.express.use(require(normalizedPath + file));
+            });
     }
 
     private initRoutes(app: Application): void {
         new Routes(app);
         new UserRoutes(app);
         app.get('/error', () => {
-            throw new AppValidationError([
+            throw new AppValidationError(
                 {
-                    name: 'email',
-                    messages: ['Email is invalid']
-                },
-                {
-                    name: 'name',
-                    messages: ['Name is invalid']
-                },
-            ]);
+                    field: 'email',
+                    message: 'Email is invalid'
+                });
         });
     }
 }

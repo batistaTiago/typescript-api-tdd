@@ -1,9 +1,9 @@
-import { AppValidationError } from "../AppValidationError";
+import { BTValidationError } from "../BTValidationError";
 import * as HTTPStatus from 'http-status';
 
-class AppValidationErrorHandler {
-    public static handle(err: AppValidationError, req, res, next) {
-        if (err.getType() == 'AppValidationError') {
+class BTValidationErrorHandler {
+    public static handle(err: BTValidationError, req, res, next) {
+        if (err.getType() == 'BTValidationError') {
 
             const details = {};
             
@@ -21,4 +21,4 @@ class AppValidationErrorHandler {
     }
 }
 
-module.exports = AppValidationErrorHandler.handle;
+module.exports = BTValidationErrorHandler.handle;

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as HTTPStatus from 'http-status';
-import { AppInvalidRouteParameterError } from '../../exceptions/AppInvalidRouteParameterError';
-import { AppValidationError } from '../../exceptions/AppValidationError';
+import { BTInvalidRouteParameterError } from '../../exceptions/BTInvalidRouteParameterError';
+import { BTValidationError } from '../../exceptions/BTValidationError';
 import UserRepository from './UserRepository';
 const models = require('../../models');
 export class UserController {
@@ -24,7 +24,7 @@ export class UserController {
         const id = parseInt(request.params.id);
 
         if (isNaN(id)) {
-            next(new AppInvalidRouteParameterError('Route parameter should be an integer.'));
+            next(new BTInvalidRouteParameterError('Route parameter should be an integer.'));
         }
 
         const user = await UserRepository.findById(id);
@@ -41,37 +41,37 @@ export class UserController {
         if (!request.body.name) {
             const field = 'name';
             const message = 'The name field is required';
-            next(new AppValidationError({ field, message }));
+            next(new BTValidationError({ field, message }));
         }
 
         if ((!request.body.email)) {
             const field = 'email';
             const message = 'The email field is required';
-            next(new AppValidationError({ field, message }));
+            next(new BTValidationError({ field, message }));
         }
 
         if (!request.body.email.isValidEmail()) {
             const field = 'email';
             const message = 'The email field is invalid, please use "user@provider.ext" format.';
-            next(new AppValidationError({ field, message }));
+            next(new BTValidationError({ field, message }));
         }
 
         if ((!request.body.password)) {
             const field = 'password';
             const message = 'The password field is required';
-            next(new AppValidationError({ field, message }));
+            next(new BTValidationError({ field, message }));
         }
 
         if ((request.body.password.length < 6)) {
             const field = 'password';
             const message = 'The password field is invalid';
-            next(new AppValidationError({ field, message }));
+            next(new BTValidationError({ field, message }));
         }
 
         if ((!request.body.password_confirmation) || (request.body.password != request.body.password_confirmation)) {
             const field = 'password';
             const message = 'The password and password confirmation do not match';
-            next(new AppValidationError({ field, message }));
+            next(new BTValidationError({ field, message }));
         }
 
         const { name, email, password } = request.body;

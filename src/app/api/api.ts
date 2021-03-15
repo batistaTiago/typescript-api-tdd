@@ -3,7 +3,7 @@ import * as bodyParser from 'body-parser';
 import { Application } from 'express';
 import Routes from './routes/routes';
 import UserRoutes from "../modules/User/Routes";
-import { AppValidationError } from '../exceptions/AppValidationError';
+import { BTValidationError } from '../exceptions/BTValidationError';
 const fs = require('fs');
 const path = require('path');
 
@@ -23,10 +23,10 @@ class Api {
 
         const normalizedPath = path.join(__dirname, '../exceptions/handlers/');
 
-        /* auto loads exception handlers */
+        /* autoloads exception handlers */
         fs.readdirSync(normalizedPath)
             .filter((file) => {
-                return (file.indexOf('.') !== 0) && (file.slice(-3) === '.js');
+                return (file.indexOf('.') !== 0) && (file.slice(-10) === 'Handler.js');
             })
             .forEach((file) => {
                 this.express.use(require(normalizedPath + file));
@@ -34,10 +34,11 @@ class Api {
     }
 
     private initRoutes(app: Application): void {
+        
         new Routes(app);
         new UserRoutes(app);
         app.get('/error', () => {
-            throw new AppValidationError(
+            throw new BTValidationError(
                 {
                     field: 'email',
                     message: 'Email is invalid'

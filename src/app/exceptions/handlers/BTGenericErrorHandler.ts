@@ -1,6 +1,6 @@
 import * as HTTPStatus from 'http-status';
 
-class AppGenericErrorHandler {
+class BTGenericErrorHandler {
     public static handle(err, req, res, next) {
         // return res.status(HTTPStatus.INTERNAL_SERVER_ERROR).json({
         //     success: false,
@@ -11,4 +11,4 @@ class AppGenericErrorHandler {
     }
 }
 
-module.exports = AppGenericErrorHandler.handle;
+module.exports = BTGenericErrorHandler.handle;

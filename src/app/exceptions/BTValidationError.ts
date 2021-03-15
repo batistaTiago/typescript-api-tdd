@@ -1,7 +1,7 @@
-import AppBaseError from './AppBaseError';
+import BTBaseError from './BTBaseError';
 import IValidationErrorData from "./interfaces/IValidationErrorData";
 
-export class AppValidationError extends AppBaseError {
+export class BTValidationError extends BTBaseError {
 
     constructor(public errorData: IValidationErrorData) { 
         super();

@@ -1,4 +1,4 @@
-export default class AppBaseError {
+export default class BTBaseError {
     public getType(): string {
         return this.constructor.name;
     }

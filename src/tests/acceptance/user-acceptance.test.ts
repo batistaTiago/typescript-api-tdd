@@ -194,9 +194,9 @@ describe('User Management Test', () => {
 
                             expect(res.body.message.toLowerCase()).to.contain('error');
 
-                            expect(res.body.details).to.be.an('object');
+                            expect(res.body.details).to.be.an('array');
                             expect(res.body.details.name).to.be.a('string');
-                            expect(res.body.details.name).to.contain('required');
+                            expect(res.body.details.name.join(';')).to.contain('required');
 
                             done(err);
                         });

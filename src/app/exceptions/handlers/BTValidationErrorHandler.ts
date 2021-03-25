@@ -3,21 +3,24 @@ import * as HTTPStatus from 'http-status';
 
 class BTValidationErrorHandler {
     public static handle(err: BTValidationError, req, res, next) {
-        if (err.getType() == 'BTValidationError') {
 
-            const details = {};
+        if (err instanceof BTValidationError) {
             
-            details[err.errorData.field] = err.errorData.message;
+            const details = BTValidationErrorHandler.extractDetailsFromErrorObject(err);
 
             return res.status(HTTPStatus.NOT_ACCEPTABLE).json({
                 success: false,
                 message: 'ERROR: Invalid data',
-                details: details
+                details: details,
             });
         }
 
+        /* not my concern */
         next(err);
+    }
 
+    private static extractDetailsFromErrorObject(err: BTValidationError) {
+        return Array.isArray(err.errorData) ? err.errorData : [err.errorData];
     }
 }
 

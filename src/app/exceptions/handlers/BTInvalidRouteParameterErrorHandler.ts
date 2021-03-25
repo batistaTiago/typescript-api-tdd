@@ -3,12 +3,15 @@ import { BTInvalidRouteParameterError } from "../BTInvalidRouteParameterError";
 
 class BTInvalidRouteParameterErrorHandler {
     public static handle(err: BTInvalidRouteParameterError, req, res, next) {
-            if (err.getType() == 'BTInvalidRouteParameterError') {
+        
+        if (err instanceof BTInvalidRouteParameterError) {
             return res.status(HTTPStatus.BAD_REQUEST).json({
                 success: false,
                 message: err.message,
             });
         }
+
+        /* not my concern */
         next(err);
     }
 }

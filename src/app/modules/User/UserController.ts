@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import * as HTTPStatus from 'http-status';
 import { BTInvalidRouteParameterError } from '../../exceptions/BTInvalidRouteParameterError';
 import { BTValidationError } from '../../exceptions/BTValidationError';
+import IValidationErrorData from '../../exceptions/interfaces/IValidationerrorData';
+import IValidationerrorData from '../../exceptions/interfaces/IValidationerrorData';
 import UserRepository from './UserRepository';
 const models = require('../../models');
 export class UserController {
@@ -38,40 +40,54 @@ export class UserController {
 
     public async create(request: Request, response: Response, next: NextFunction) {
 
+
+        const nameError: IValidationErrorData = {
+            field: 'name',
+            messages: []
+        }
+
+        let field = 'name';
         if (!request.body.name) {
-            const field = 'name';
-            const message = 'The name field is required';
-            next(new BTValidationError({ field, message }));
+            nameError.messages.push('The name field is required');
         }
 
+        field = 'email';
+        const emailError: IValidationErrorData = {
+            field,
+            messages: []
+        }
         if ((!request.body.email)) {
-            const field = 'email';
-            const message = 'The email field is required';
-            next(new BTValidationError({ field, message }));
+            emailError.messages.push('The email field is required');
+        } else if (!request.body.email.isValidEmail()) {
+            emailError.messages.push('The email field is invalid, please use "user@provider.ext" format.');
         }
 
-        if (!request.body.email.isValidEmail()) {
-            const field = 'email';
-            const message = 'The email field is invalid, please use "user@provider.ext" format.';
-            next(new BTValidationError({ field, message }));
+        field = 'password';
+        const passwordError: IValidationErrorData = {
+            field,
+            messages: []
         }
-
         if ((!request.body.password)) {
-            const field = 'password';
-            const message = 'The password field is required';
-            next(new BTValidationError({ field, message }));
-        }
-
-        if ((request.body.password.length < 6)) {
-            const field = 'password';
-            const message = 'The password field is invalid';
-            next(new BTValidationError({ field, message }));
+            passwordError.messages.push('The password field is required');
+        } else if ((request.body.password.length < 6)) {
+            passwordError.messages.push('The password field is invalid');
         }
 
         if ((!request.body.password_confirmation) || (request.body.password != request.body.password_confirmation)) {
-            const field = 'password';
-            const message = 'The password and password confirmation do not match';
-            next(new BTValidationError({ field, message }));
+            passwordError.messages.push('The password and password confirmation do not match')
+        }
+
+        const errors: IValidationErrorData[] = [
+            nameError,
+            emailError,
+            passwordError
+        ].filter(error => {
+            return error.messages.length > 0;
+        });
+
+        if (errors.length) {
+            console.log(errors);
+            next(new BTValidationError(errors)); // throws the error to the handler...
         }
 
         const { name, email, password } = request.body;

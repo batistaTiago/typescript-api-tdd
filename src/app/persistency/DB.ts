@@ -21,11 +21,6 @@ export default class DB {
     }
 
     private constructor() {
-        // console.log('#################################')
-        // console.log('#################################')
-        // console.log('###### CONNECTING TO PGSQL ######')
-        // console.log('#################################')
-        // console.log('#################################')
         this.connection = require('knex')({
             client: 'pg',
             connection: config.connectionString

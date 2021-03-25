@@ -4,46 +4,52 @@ import { Application } from 'express';
 import Routes from './routes/routes';
 import UserRoutes from "../modules/User/Routes";
 import { BTValidationError } from '../exceptions/BTValidationError';
-const fs = require('fs');
-const path = require('path');
 
 class Api {
     public express: Application;
 
     constructor() {
         this.express = express();
-        this.middleware();
+        this.loadDefaultMiddleware();
+        this.initRoutes(this.express);
+        this.loadDefaultExceptionHandlers(this.express);
+        
     }
 
-    public middleware(): void {
+    public loadDefaultMiddleware(): void {
         this.express.use(bodyParser.urlencoded({ extended: true }));
         this.express.use(bodyParser.json());
-
-        this.initRoutes(this.express);
-
-        const normalizedPath = path.join(__dirname, '../exceptions/handlers/');
-
-        /* autoloads exception handlers */
-        fs.readdirSync(normalizedPath)
-            .filter((file) => {
-                return (file.indexOf('.') !== 0) && (file.slice(-10) === 'Handler.js');
-            })
-            .forEach((file) => {
-                this.express.use(require(normalizedPath + file));
-            });
     }
 
     private initRoutes(app: Application): void {
-        
+
         new Routes(app);
         new UserRoutes(app);
         app.get('/error', () => {
             throw new BTValidationError(
                 {
                     field: 'email',
-                    message: 'Email is invalid'
+                    messages: [
+                        'Email is invalid',
+                    ]
                 });
         });
+    }
+
+    private loadDefaultExceptionHandlers(app: Application): void {
+        const fs = require('fs');
+        const path = require('path');
+
+        const normalizedPath = path.join(__dirname, '../exceptions/handlers/');
+        /* autoloads exception handlers */
+        fs.readdirSync(normalizedPath)
+            .filter((file) => {
+                return (file.indexOf('.') !== 0) && (file.slice(-10) === 'Handler.js');
+            })
+            .reverse() // melhorar isso (ta pegando os arquivos em ordem alfabetica, ai precisa reverter pra os handlers serevem registrados na ordem certa)
+            .forEach((file) => {
+                app.use(require(normalizedPath + file));
+            });
     }
 }
 

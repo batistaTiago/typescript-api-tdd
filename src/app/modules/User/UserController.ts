@@ -3,44 +3,50 @@ import * as HTTPStatus from 'http-status';
 import { BTInvalidRouteParameterError } from '../../exceptions/BTInvalidRouteParameterError';
 import { BTValidationError } from '../../exceptions/BTValidationError';
 import IValidationErrorData from '../../exceptions/interfaces/IValidationerrorData';
-import IValidationerrorData from '../../exceptions/interfaces/IValidationerrorData';
 import UserRepository from './UserRepository';
-const models = require('../../models');
+
 export class UserController {
 
-    public constructor() { }
-
-    public async getAll(request: Request, response: Response) {
+    public async getAll(request: Request, response: Response, next: NextFunction) {
 
         const users = await UserRepository.findWithFilter(request.query.search_query?.toString());
 
-        return response.status(HTTPStatus.OK).send({
+        response.locals.http_status = HTTPStatus.OK;
+
+        response.locals.json_data = {
             success: true,
+            data: users,
             message: 'OK',
             count: users.length,
-            data: users,
-        });
+        };
+
+        return next();
     }
 
     public async find(request: Request, response: Response, next: NextFunction) {
         const id = parseInt(request.params.id);
 
         if (isNaN(id)) {
-            next(new BTInvalidRouteParameterError('Route parameter should be an integer.'));
+            return next(new BTInvalidRouteParameterError('Route parameter should be an integer.'));
         }
 
         const user = await UserRepository.findById(id);
 
-        return response.status(HTTPStatus.OK).send({
+        response.locals.http_status = HTTPStatus.OK;
+
+        response.locals.json_data = {
             success: !!user,
             message: 'OK',
             data: user
-        });
+        };
+
+        return next();
     }
 
     public async create(request: Request, response: Response, next: NextFunction) {
 
-
+        /* @TODO: refactor */
+        /* START validation */
         const nameError: IValidationErrorData = {
             field: 'name',
             messages: []
@@ -86,60 +92,64 @@ export class UserController {
         });
 
         if (errors.length) {
-            console.log(errors);
-            next(new BTValidationError(errors)); // throws the error to the handler...
+            return next(new BTValidationError(errors)); // throws the error to the handler...
         }
+        /* @END validation */
+
+
 
         const { name, email, password } = request.body;
-        const user = await models.User.create({
+        const user = await UserRepository.create({
             name, email, password
         });
 
-        return response.status(HTTPStatus.CREATED).send({
+        response.locals.http_status = HTTPStatus.CREATED;
+
+        response.locals.json_data = {
             success: true,
             message: 'User created successfully',
             data: user
-        });
+        };
+
+        return next();
     }
 
-    public async update(request: Request, response: Response) {
+    public async update(request: Request, response: Response, next: NextFunction) {
+        
+        const id = parseInt(request.params.id);
 
-        try {
-            const set = {
-                name: request.body.name,
-                email: request.body.email,
-                password: request.body.password,
-            };
+        const set = {
+            name: request.body.name,
+            email: request.body.email,
+            password: request.body.password,
+        };
 
-            const filters = {
-                where: {
-                    id: request.params.id
-                }
-            };
-
-            const updateCount = await models.User.update(set, filters);
-
-            if (updateCount == 0) {
-                return response.status(HTTPStatus.OK).send({
-                    success: false,
-                    message: 'Resource not found: no users have been affected by this operation',
-                    data: null
-                });
+        const filters = {
+            where: {
+                id
             }
+        };
 
-            const user = await models.User.findOne(filters);
+        const updateCount = await UserRepository.update(set, filters);
 
+        if (updateCount == 0) {
             return response.status(HTTPStatus.OK).send({
-                success: true,
-                message: 'User updated successfully',
-                data: user
-            });
-        } catch (e) {
-            response.status(HTTPStatus.INTERNAL_SERVER_ERROR).json({
                 success: false,
-                message: 'error'
+                message: 'Resource not found: no users have been affected by this operation',
+                data: null
             });
         }
 
+        const user = await UserRepository.findById(id);
+
+        response.locals.http_status = HTTPStatus.OK;
+
+        response.locals.json_data = {
+            success: true,
+            message: 'User updated successfully',
+            data: user
+        };
+
+        return next();
     }
 }

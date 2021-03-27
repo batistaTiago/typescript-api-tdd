@@ -1,9 +1,12 @@
+import { Sequelize } from "sequelize";
 import Repository from "../../persistency/Repository";
 import IUser from "./interfaces/IUser";
+const models = require('../../models');
 
 export default class UserRepository extends Repository {
 
     public static table: string = 'Users';
+    public static model = models.User;
 
     constructor() { 
         super();
@@ -36,5 +39,13 @@ export default class UserRepository extends Repository {
         }
 
         return null;
+    }
+
+    public static async create(data: IUser) {
+        return await UserRepository.model.create(data);
+    }
+
+    public static async update(set, filters) {
+        return await UserRepository.model.update(set, filters);
     }
 }

@@ -4,21 +4,34 @@ import { Application } from 'express';
 import Routes from './routes/routes';
 import UserRoutes from "../modules/User/Routes";
 import { BTValidationError } from '../exceptions/BTValidationError';
+import { BTInvalidRouteParameterError } from '../exceptions/BTInvalidRouteParameterError';
 
 class Api {
     public express: Application;
 
     constructor() {
         this.express = express();
-        this.loadDefaultMiddleware();
-        this.initRoutes(this.express);
-        this.loadDefaultExceptionHandlers(this.express);
+
+        this.loadIncomingMiddleware(this.express);
         
+        this.initRoutes(this.express);
+        
+        this.loadOutgoingMiddleware(this.express);
+        
+        this.loadDefaultExceptionHandlers(this.express);
     }
 
-    public loadDefaultMiddleware(): void {
-        this.express.use(bodyParser.urlencoded({ extended: true }));
-        this.express.use(bodyParser.json());
+    public loadIncomingMiddleware(app: Application): void {
+        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(bodyParser.json());
+    }
+
+    private loadOutgoingMiddleware(app: Application): void {
+        app.use((req, res, next) => {
+            /* @TODO: refactor em outro arquivo */ 
+            next();
+            res.status(res.locals.http_status).send(res.locals.json_data);
+        });
     }
 
     private initRoutes(app: Application): void {
@@ -26,13 +39,15 @@ class Api {
         new Routes(app);
         new UserRoutes(app);
         app.get('/error', () => {
+            /* @TODO: refactor em outro arquivo */
             throw new BTValidationError(
                 {
                     field: 'email',
                     messages: [
                         'Email is invalid',
                     ]
-                });
+                }
+            );
         });
     }
 

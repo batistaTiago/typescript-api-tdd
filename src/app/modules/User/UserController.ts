@@ -3,13 +3,18 @@ import * as HTTPStatus from 'http-status';
 import { BTInvalidRouteParameterError } from '../../exceptions/BTInvalidRouteParameterError';
 import { BTValidationError } from '../../exceptions/BTValidationError';
 import IValidationErrorData from '../../exceptions/interfaces/IValidationerrorData';
-import UserRepository from './UserRepository';
+import BTBaseController from '../../http/controllers/BTBaseController';
+import IUserRepository from './interfaces/IUserRepository';
 
-export class UserController {
+export class UserController extends BTBaseController {
 
-    public async getAll(request: Request, response: Response, next: NextFunction) {
+    constructor(private repository: IUserRepository) {
+        super();
+    }
 
-        const users = await UserRepository.findWithFilter(request.query.search_query?.toString());
+    public async getAll(request: Request, response: any, next: NextFunction) {
+
+        const users = await this.repository.findWithFilter(request.query.search_query?.toString());
 
         response.locals.http_status = HTTPStatus.OK;
 
@@ -30,7 +35,7 @@ export class UserController {
             return next(new BTInvalidRouteParameterError('Route parameter should be an integer.'));
         }
 
-        const user = await UserRepository.findById(id);
+        const user = await this.repository.findById(id);
 
         response.locals.http_status = HTTPStatus.OK;
 
@@ -99,7 +104,7 @@ export class UserController {
 
 
         const { name, email, password } = request.body;
-        const user = await UserRepository.create({
+        const user = await this.repository.create({
             name, email, password
         });
 
@@ -130,7 +135,7 @@ export class UserController {
             }
         };
 
-        const updateCount = await UserRepository.update(set, filters);
+        const updateCount = await this.repository.update(set, filters);
 
         if (updateCount == 0) {
             return response.status(HTTPStatus.OK).send({
@@ -140,7 +145,7 @@ export class UserController {
             });
         }
 
-        const user = await UserRepository.findById(id);
+        const user = await this.repository.findById(id);
 
         response.locals.http_status = HTTPStatus.OK;
 

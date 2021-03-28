@@ -7,6 +7,7 @@ import { BTValidationError } from '../exceptions/BTValidationError';
 import { BTInvalidRouteParameterError } from '../exceptions/BTInvalidRouteParameterError';
 
 class Api {
+
     public express: Application;
 
     constructor() {
@@ -27,8 +28,8 @@ class Api {
     }
 
     private loadOutgoingMiddleware(app: Application): void {
-        app.use((req, res, next) => {
-            /* @TODO: refactor em outro arquivo */ 
+        app.use((req, res: any, next) => {
+            /* @TODO: refactor em outro arquivo */
             next();
             res.status(res.locals.http_status).send(res.locals.json_data);
         });

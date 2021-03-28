@@ -1,5 +1,6 @@
 import { Application } from 'express';
 import { UserController } from './UserController';
+import UserRepository from './UserRepository';
 
 class UserRoutes {
 
@@ -7,7 +8,8 @@ class UserRoutes {
     private controller: UserController;
 
     constructor(app: Application) {
-        this.controller = new UserController();
+        const userRepo = new UserRepository();
+        this.controller = new UserController(userRepo);
         this.initRoutes(app);
      }
 

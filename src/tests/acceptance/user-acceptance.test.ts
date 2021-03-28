@@ -34,6 +34,7 @@ describe('User Management Test', () => {
         it('Should return json with success equals true and an array of users', (done) => {
             request(app).get('/api/v1/users')
                 .end((err: any, res: any) => {
+                    console.log(res.body);
                     expect(res.status).to.equal(HTTPStatus.OK);
 
                     expect(res.body.success).to.equal(true);

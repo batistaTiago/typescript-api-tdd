@@ -1,4 +1,4 @@
-export default interface IBTHttpResponse {
+export default interface BTHttpResponseInterface {
     statusCode: number;
     headers?: any;
     body?: {

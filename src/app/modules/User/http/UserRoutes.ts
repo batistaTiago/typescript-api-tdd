@@ -1,4 +1,4 @@
-import IHttpRouter from '../../../framework/http/adapters/IHttpRouter';
+import IHttpRouter from '../../../framework/http/adapters/BTHttpRoutingInterface';
 import UserControllerExpressAdapter from '../../../framework/http/adapters/UserControllerExpressAdapter';
 
 class UserRoutes {

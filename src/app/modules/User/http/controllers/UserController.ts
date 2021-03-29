@@ -1,13 +1,13 @@
 import * as HTTPStatus from 'http-status';
 import BTBaseController from '../../../../framework/http/BTBaseController';
 import BTHttpRequest from '../../../../framework/http/requests/BTHttpRequest';
-import IBTHttpResponse from '../../../../framework/http/requests/interfaces/IBTHttpResponse';
-import IUserRepository from '../../data/IUserRepository';
-import IUserController from './IUserController';
+import IBTHttpResponse from '../../../../framework/http/requests/interfaces/BTHttpResponseInterface';
+import BTUserRepositoryInterface from '../../data/interfaces/BTUserRepositoryInterface';
+import BTUserControllerInterface from './BTUserControllerInterface';
 
-export default class UserController extends BTBaseController implements IUserController {
+export default class UserController extends BTBaseController implements BTUserControllerInterface {
 
-    constructor(protected repository: IUserRepository) {
+    constructor(protected repository: BTUserRepositoryInterface) {
         super();
     }
 

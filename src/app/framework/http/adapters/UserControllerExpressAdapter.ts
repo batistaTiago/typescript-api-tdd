@@ -1,11 +1,11 @@
-import IUserController from "../../../modules/User/http/controllers/IUserController";
+import BTUserControllerInterface from "../../../modules/User/http/controllers/BTUserControllerInterface";
 import BTCreateUserHttpRequest from "../../../modules/User/http/requests/BTCreateUserHttpRequest";
 import BTFindUserHttpRequest from "../../../modules/User/http/requests/BTFindUserHttpRequest";
 import BTBaseObject from "../../BTBaseObject";
 
 export default class UserControllerExpressAdapter extends BTBaseObject {
 
-    constructor(public controller: IUserController) {
+    constructor(public controller: BTUserControllerInterface) {
         super();
     }
 

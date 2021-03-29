@@ -1,5 +1,5 @@
 import BTBaseError from './BTBaseError';
-import IValidationErrorData from "./interfaces/IValidationErrorData";
+import IValidationErrorData from "./interfaces/BTValidationErrorDataInterface";
 
 export class BTValidationError extends BTBaseError {
 

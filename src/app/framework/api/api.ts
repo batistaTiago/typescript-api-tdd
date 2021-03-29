@@ -1,16 +1,14 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { Application } from 'express';
-import Routes from './routes/routes';
-import UserRoutes from "../../modules/User/http/UserRoutes";
 import { BTValidationError } from '../exceptions/BTValidationError';
-import IBTAppModule from '../../modules/IBTAppModule';
+import BTAppModuleInterface from '../../modules/BTAppModuleInterface';
 import UserModule from '../../modules/User/UserModule';
 
 class Api {
 
     public express: Application;
-    private modules: IBTAppModule[];
+    private modules: BTAppModuleInterface[];
 
     constructor() {
         this.express = express();

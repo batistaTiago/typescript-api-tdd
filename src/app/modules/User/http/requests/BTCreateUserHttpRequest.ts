@@ -1,5 +1,5 @@
 import { BTValidationError } from "../../../../framework/exceptions/BTValidationError";
-import IValidationErrorData from "../../../../framework/exceptions/interfaces/IValidationErrorData";
+import IValidationErrorData from "../../../../framework/exceptions/interfaces/BTValidationErrorDataInterface";
 import BTHttpRequest from "../../../../framework/http/requests/BTHttpRequest";
 
 export default class BTCreateUserHttpRequest extends BTHttpRequest {

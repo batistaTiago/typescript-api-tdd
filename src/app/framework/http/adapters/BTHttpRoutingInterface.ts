@@ -1,4 +1,4 @@
-export default interface IHttpRouter {
+export default interface BTHttpRoutingInterface {
     get(path: string, callback: CallableFunction);
     post(path: string, callback: CallableFunction);
     patch(path: string, callback: CallableFunction);

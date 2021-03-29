@@ -1,4 +1,4 @@
-export default interface IBTHttpRequest {
+export default interface BTHttpRequestInterface {
     body?: any;
     query?: any;
     params?: any;

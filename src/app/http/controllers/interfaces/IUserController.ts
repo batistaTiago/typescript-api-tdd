@@ -1,9 +1,9 @@
-import IHttpRequest from "../../requests/interfaces/IBTHttpRequest";
+import BTHttpRequest from "../../requests/BTHttpRequest";
 import IHttpResponse from "../../requests/interfaces/IBTHttpResponse";
 
 export default interface IUserController {
-    getAll(request: IHttpRequest): Promise<IHttpResponse>;
-    find(request: IHttpRequest): Promise<IHttpResponse>;
-    create(request: IHttpRequest): Promise<IHttpResponse>;
-    update(request: IHttpRequest): Promise<IHttpResponse>;
+    getAll(request: BTHttpRequest): Promise<IHttpResponse>;
+    find(request: BTHttpRequest): Promise<IHttpResponse>;
+    create(request: BTHttpRequest): Promise<IHttpResponse>;
+    update(request: BTHttpRequest): Promise<IHttpResponse>;
 }

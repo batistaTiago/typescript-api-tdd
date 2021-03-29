@@ -1,6 +1,7 @@
 export default interface IBTHttpResponse {
     statusCode: number;
-    payload: {
+    headers?: any;
+    body?: {
         success: boolean;
         data?: object;
         count?: number;

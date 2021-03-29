@@ -1,11 +1,7 @@
 import * as HTTPStatus from 'http-status';
-import { BTInvalidRouteParameterError } from '../../exceptions/BTInvalidRouteParameterError';
-import { BTValidationError } from '../../exceptions/BTValidationError';
-import IValidationErrorData from '../../exceptions/interfaces/IValidationerrorData';
 import BTBaseController from '../../http/BTBaseController';
 import IUserController from '../../http/interfaces/IUserController';
-import BTCreateUserHttpRequest from '../../http/requests/BTCreateUserHttpRequest';
-import IBTHttpRequest from '../../http/requests/interfaces/IBTHttpRequest';
+import BTHttpRequest from '../../http/requests/BTHttpRequest';
 import IBTHttpResponse from '../../http/requests/interfaces/IBTHttpResponse';
 import IUserRepository from '../User/UserRepository';
 export class UserController extends BTBaseController implements IUserController {
@@ -14,13 +10,13 @@ export class UserController extends BTBaseController implements IUserController 
         super();
     }
 
-    public async getAll(request: IBTHttpRequest): Promise<IBTHttpResponse> {
+    public async getAll(request: BTHttpRequest): Promise<IBTHttpResponse> {
 
         const users = await this.repository.findWithFilter(request.query.search_query?.toString());
 
         return {
             statusCode: HTTPStatus.OK,
-            payload: {
+            body: {
                 success: true,
                 data: users,
                 message: 'OK',
@@ -29,18 +25,12 @@ export class UserController extends BTBaseController implements IUserController 
         };
     }
 
-    public async find(request: IBTHttpRequest): Promise<IBTHttpResponse> {
-        const id = parseInt(request.params.id);
-
-        if (isNaN(id)) {
-            throw new BTInvalidRouteParameterError('Route parameter should be an integer.');
-        }
-
-        const user = await this.repository.findById(id);
+    public async find(request: BTHttpRequest): Promise<IBTHttpResponse> {
+        const user = await this.repository.findById(parseInt(request.params.id));
 
         return {
             statusCode: HTTPStatus.OK,
-            payload: {
+            body: {
                 success: !!user,
                 message: 'OK',
                 data: (user as any)
@@ -48,10 +38,8 @@ export class UserController extends BTBaseController implements IUserController 
         };
     }
 
-    public async create(request: BTCreateUserHttpRequest): Promise<IBTHttpResponse> {
-        const data = request.validate();
-
-        const { name, email, password } = data;
+    public async create(request: BTHttpRequest): Promise<IBTHttpResponse> {
+        const { name, email, password } = request.body;
         const user = await this.repository.create({
             name, email, password
         });
@@ -59,7 +47,7 @@ export class UserController extends BTBaseController implements IUserController 
 
         return {
             statusCode: HTTPStatus.CREATED,
-            payload: {
+            body: {
                 success: true,
                 message: 'User created successfully',
                 data: user
@@ -67,7 +55,7 @@ export class UserController extends BTBaseController implements IUserController 
         };
     }
 
-    public async update(request: IBTHttpRequest): Promise<IBTHttpResponse> {
+    public async update(request: BTHttpRequest): Promise<IBTHttpResponse> {
 
         const id = parseInt(request.params.id);
 
@@ -88,7 +76,7 @@ export class UserController extends BTBaseController implements IUserController 
         if (updateCount == 0) {
             return {
                 statusCode: HTTPStatus.OK,
-                payload: {
+                body: {
                     success: false,
                     message: 'Resource not found: no users have been affected by this operation',
                 }
@@ -99,7 +87,7 @@ export class UserController extends BTBaseController implements IUserController 
 
         return {
             statusCode: HTTPStatus.OK,
-            payload: {
+            body: {
                 success: true,
                 message: 'User updated successfully',
                 data: (user as any)

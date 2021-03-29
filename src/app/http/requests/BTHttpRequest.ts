@@ -1,15 +1,23 @@
 import BTBaseObject from "../../BTBaseObject";
-import IBTHttpRequest from "./interfaces/IBTHttpRequest";
 
-abstract class BTHttpRequest extends BTBaseObject implements IBTHttpRequest {
+export default abstract class BTHttpRequest extends BTBaseObject {
     body?: any;
     query?: any;
     params?: any;
-    protocol?: any;
-    originalUrl?: any;
+
+    public constructor(data) {
+        super();
+        this.body = data.body;
+        this.query = data.query;
+        this.params = data.params;
+
+        this.authorize();
+        this.validate();
+    }
     
-    abstract authorize(): boolean;
+    public authorize(): boolean {
+        return true;
+    }
+    
     abstract validate(): any;
-    abstract url(): string;
-    abstract get?(): any;
 }

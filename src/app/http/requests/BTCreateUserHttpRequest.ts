@@ -1,27 +1,9 @@
-import { request } from "express";
 import { BTForbiddenError } from "../../exceptions/BTForbiddenError";
 import { BTValidationError } from "../../exceptions/BTValidationError";
 import IValidationErrorData from "../../exceptions/interfaces/IValidationErrorData";
-import IBTHttpRequest from "./interfaces/IBTHttpRequest";
+import BTHttpRequest from "./BTHttpRequest";
 
-export default class BTCreateUserHttpRequest implements IBTHttpRequest {
-
-    public body: any;
-    public query: any;
-    public params: any;
-
-    public constructor(data: IBTHttpRequest) {
-        this.body = data.body;
-        this.query = data.query;
-        this.params = data.params;
-    }
-
-
-    public authorize(): boolean {
-        return true;
-        throw new BTForbiddenError('ERROR: This action is forbidden');
-    }
-
+export default class BTCreateUserHttpRequest extends BTHttpRequest {
     public validate() {
 
         const nameError: IValidationErrorData = {

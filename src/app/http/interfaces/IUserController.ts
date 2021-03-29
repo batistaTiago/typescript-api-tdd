@@ -1,9 +1,9 @@
-import IBTHttpRequest from "../requests/interfaces/IBTHttpRequest";
+import BTHttpRequest from "../requests/BTHttpRequest";
 import IBTHttpResponse from "../requests/interfaces/IBTHttpResponse";
 
 export default interface IUserController {
-    getAll(request: IBTHttpRequest): Promise<IBTHttpResponse>;
-    find(request: IBTHttpRequest): Promise<IBTHttpResponse>;
-    create(request: IBTHttpRequest): Promise<IBTHttpResponse>;
-    update(request: IBTHttpRequest): Promise<IBTHttpResponse>;
+    getAll(request: BTHttpRequest): Promise<IBTHttpResponse>;
+    find(request: BTHttpRequest): Promise<IBTHttpResponse>;
+    create(request: BTHttpRequest): Promise<IBTHttpResponse>;
+    update(request: BTHttpRequest): Promise<IBTHttpResponse>;
 }

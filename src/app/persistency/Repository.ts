@@ -1,6 +1,4 @@
 import DB from "./DB";
-import IRepository from "./interfaces/IRepository";
-
 export default abstract class Repository {
 
     public constructor(

@@ -1,10 +1,11 @@
 import * as HTTPStatus from 'http-status';
-import BTBaseController from '../../http/BTBaseController';
-import IUserController from '../../http/interfaces/IUserController';
-import BTHttpRequest from '../../http/requests/BTHttpRequest';
-import IBTHttpResponse from '../../http/requests/interfaces/IBTHttpResponse';
-import IUserRepository from '../User/UserRepository';
-export class UserController extends BTBaseController implements IUserController {
+import BTBaseController from '../../../../http/BTBaseController';
+import BTHttpRequest from '../../../../http/requests/BTHttpRequest';
+import IBTHttpResponse from '../../../../http/requests/interfaces/IBTHttpResponse';
+import IUserRepository from '../../data/IUserRepository';
+import IUserController from './IUserController';
+
+export default class UserController extends BTBaseController implements IUserController {
 
     constructor(protected repository: IUserRepository) {
         super();

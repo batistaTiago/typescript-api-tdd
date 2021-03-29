@@ -1,10 +1,9 @@
 import BTBaseObject from "../../BTBaseObject";
-import IUserController from "../interfaces/IUserController";
-import BTCreateUserHttpRequest from "../requests/BTCreateUserHttpRequest";
-import { BTFindResourceHttpRequest } from "../requests/BTFindResourceHttpRequest";
-import BTFindUserHttpRequest from "../requests/BTFindUserHttpRequest";
+import IUserController from "../../modules/User/http/controllers/IUserController";
+import BTCreateUserHttpRequest from "../../modules/User/http/requests/BTCreateUserHttpRequest";
+import BTFindUserHttpRequest from "../../modules/User/http/requests/BTFindUserHttpRequest";
 
-export class UserControllerExpressAdapter extends BTBaseObject {
+export default class UserControllerExpressAdapter extends BTBaseObject {
 
     constructor(public controller: IUserController) {
         super();

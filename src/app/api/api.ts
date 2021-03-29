@@ -2,15 +2,22 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { Application } from 'express';
 import Routes from './routes/routes';
-import UserRoutes from "../modules/User/Routes";
+import UserRoutes from "../modules/User/http/UserRoutes";
 import { BTValidationError } from '../exceptions/BTValidationError';
+import IBTAppModule from '../modules/IBTAppModule';
+import UserModule from '../modules/User/UserModule';
 
 class Api {
 
     public express: Application;
+    private modules: IBTAppModule[];
 
     constructor() {
         this.express = express();
+
+        this.modules = [
+            new UserModule(this.express)
+        ]
 
         this.loadIncomingMiddleware(this.express);
         
@@ -44,15 +51,17 @@ class Api {
 
     private initRoutes(app: Application): void {
 
-        new Routes(app);
-        new UserRoutes(app);
+        this.modules.forEach(module => {
+            module.init();
+        })
+        
         app.get('/error', () => {
             /* @TODO: refactor em outro arquivo */
             throw new BTValidationError(
                 {
-                    field: 'email',
+                    field: 'test_field',
                     messages: [
-                        'Email is invalid',
+                        'Test field is invalid',
                     ]
                 }
             );

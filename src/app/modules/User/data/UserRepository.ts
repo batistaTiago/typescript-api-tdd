@@ -1,7 +1,7 @@
-import Repository from "../../persistency/Repository";
-import IUserRepository from "./interfaces/IUserRepository";
-import IUser from "./interfaces/IUser";
-const models = require('../../models');
+import Repository from "../../../persistency/Repository";
+import IUser from "./IUser";
+import IUserRepository from "./IUserRepository";
+const models = require('../../../models');
 
 
 

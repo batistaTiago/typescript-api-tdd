@@ -1,7 +1,6 @@
-import { BTForbiddenError } from "../../exceptions/BTForbiddenError";
-import { BTValidationError } from "../../exceptions/BTValidationError";
-import IValidationErrorData from "../../exceptions/interfaces/IValidationErrorData";
-import BTHttpRequest from "./BTHttpRequest";
+import { BTValidationError } from "../../../../exceptions/BTValidationError";
+import IValidationErrorData from "../../../../exceptions/interfaces/IValidationErrorData";
+import BTHttpRequest from "../../../../http/requests/BTHttpRequest";
 
 export default class BTCreateUserHttpRequest extends BTHttpRequest {
     public validate() {

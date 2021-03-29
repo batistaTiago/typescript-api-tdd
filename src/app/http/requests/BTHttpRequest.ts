@@ -15,7 +15,7 @@ export default abstract class BTHttpRequest extends BTBaseObject {
         this.validate();
     }
     
-    public authorize(): boolean {
+    protected authorize(): boolean {
         return true;
     }
     

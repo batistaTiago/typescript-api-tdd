@@ -10,14 +10,6 @@ export default class UserRepository extends Repository implements IUserRepositor
     public table: string = 'Users';
     public model = models.User;
 
-    constructor() {
-        super();
-    }
-
-    public queryBuilder() {
-        return Repository.queryBuilder(this.table);
-    }
-
     public async findWithFilter(searchFor: string | undefined, fields: Array<String> = ['*']): Promise<IUser[]> {
         const output = this.queryBuilder();
 

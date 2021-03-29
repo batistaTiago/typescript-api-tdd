@@ -4,8 +4,8 @@ import IRepository from "./interfaces/IRepository";
 export default abstract class Repository {
 
     public constructor(
-        protected table: string | null | undefined, 
-        protected model: string | null | undefined
+        protected table?: string, 
+        protected model?: any
     ) {}
 
     public queryBuilder() {

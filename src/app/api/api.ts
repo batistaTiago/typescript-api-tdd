@@ -4,7 +4,6 @@ import { Application } from 'express';
 import Routes from './routes/routes';
 import UserRoutes from "../modules/User/Routes";
 import { BTValidationError } from '../exceptions/BTValidationError';
-import { BTInvalidRouteParameterError } from '../exceptions/BTInvalidRouteParameterError';
 
 class Api {
 
@@ -28,9 +27,17 @@ class Api {
     }
 
     private loadOutgoingMiddleware(app: Application): void {
-        app.use((req, res: any, next) => {
+        app.use((req: any, res: any, next) => {
             /* @TODO: refactor em outro arquivo */
             next();
+
+            res.locals.json_data.request = {
+                url: req.protocol + '://' + req.get('host') + req.originalUrl,
+                method: req.method,
+                headers: req.headers,
+                body: req.body,
+            };
+
             res.status(res.locals.http_status).send(res.locals.json_data);
         });
     }
@@ -62,7 +69,8 @@ class Api {
             .filter((file) => {
                 return (file.indexOf('.') !== 0) && (file.slice(-10) === 'Handler.js');
             })
-            .reverse() // melhorar isso (ta pegando os arquivos em ordem alfabetica, ai precisa reverter pra os handlers serevem registrados na ordem certa)
+            // @TODO: melhorar isso (ta pegando os arquivos em ordem alfabetica, precisando depois reverter pra os handlers serevem registrados na ordem certa)
+            .reverse()
             .forEach((file) => {
                 app.use(require(normalizedPath + file));
             });

@@ -1,4 +1,4 @@
-export default class BTBaseController {
+export default abstract class BTBaseObject {
     public constructor() {
         for (let prop in this) {
             if (typeof(this[prop]) == 'function') {

@@ -30,11 +30,30 @@ describe('User Management Test', () => {
         await models.User.create(testUser);
     });
 
+    describe('User Controller', () => {
+        it('Should return json with a request echo', (done) => {
+            request(app).get('/api/v1/users')
+                .end((err: any, res: any) => {
+                    expect(res.status).to.equal(200);
+
+
+                    expect(res.body.request).to.be.an('object');
+
+                    expect(res.body.request.url).to.be.a('string');
+                    expect(res.body.request.method).to.be.a('string');
+
+                    expect(res.body.request.headers).to.be.an('object');
+                    expect(res.body.request.body).to.be.an('object');
+
+                    done(err);
+                });
+        });
+    });
+
     describe('GET /api/v1/users', () => {
         it('Should return json with success equals true and an array of users', (done) => {
             request(app).get('/api/v1/users')
                 .end((err: any, res: any) => {
-                    console.log(res.body);
                     expect(res.status).to.equal(HTTPStatus.OK);
 
                     expect(res.body.success).to.equal(true);
@@ -144,7 +163,7 @@ describe('User Management Test', () => {
         it('Should return json with success equals false if the id is not an integer', (done) => {
             request(app).get(`/api/v1/users/something_else`)
                 .end((err: any, res: any) => {
-                    
+
                     expect(res.status).to.equal(HTTPStatus.BAD_REQUEST);
 
                     expect(res.body.success).to.equal(false);
@@ -342,25 +361,27 @@ describe('User Management Test', () => {
                 });
         });
 
-        // describe('User PATCH Validation', () => {
-        //     describe('Name field validation', () => {
-        //         it('Is null or string', (done) => {
-        //             // throw new Error('To be implemented...');
-        //             done();
-        //         });
-        //     });
-        //     describe('Email field validation', () => {
-        //         it('Is null or a valid email address', (done) => {
-        //             // throw new Error('To be implemented...');
-        //             done();
-        //         });
-        //     });
-        //     describe('Password field validation', () => {
-        //         it('Is null or at least 6 characters long', (done) => {
-        //             // throw new Error('To be implemented...');
-        //             done();
-        //         });
-        //     });
-        // });
+        /*
+        describe('User PATCH Validation', () => {
+            describe('Name field validation', () => {
+                it('Is null or string', (done) => {
+                    // throw new Error('To be implemented...');
+                    done();
+                });
+            });
+            describe('Email field validation', () => {
+                it('Is null or a valid email address', (done) => {
+                    // throw new Error('To be implemented...');
+                    done();
+                });
+            });
+            describe('Password field validation', () => {
+                it('Is null or at least 6 characters long', (done) => {
+                    // throw new Error('To be implemented...');
+                    done();
+                });
+            });
+        });
+        */
     });
 });

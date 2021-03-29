@@ -1,6 +1,6 @@
 import UserController from "./http/controllers/UserController";
 import UserRoutes from "./http/UserRoutes";
-import UserControllerExpressAdapter from '../../http/adapters/UserControllerExpressAdapter';
+import UserControllerExpressAdapter from '../../framework/http/adapters/UserControllerExpressAdapter';
 import { Application } from "express";
 import UserRepository from "./data/UserRepository";
 

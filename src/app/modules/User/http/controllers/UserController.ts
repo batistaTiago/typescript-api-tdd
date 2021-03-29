@@ -1,7 +1,7 @@
 import * as HTTPStatus from 'http-status';
-import BTBaseController from '../../../../http/BTBaseController';
-import BTHttpRequest from '../../../../http/requests/BTHttpRequest';
-import IBTHttpResponse from '../../../../http/requests/interfaces/IBTHttpResponse';
+import BTBaseController from '../../../../framework/http/BTBaseController';
+import BTHttpRequest from '../../../../framework/http/requests/BTHttpRequest';
+import IBTHttpResponse from '../../../../framework/http/requests/interfaces/IBTHttpResponse';
 import IUserRepository from '../../data/IUserRepository';
 import IUserController from './IUserController';
 

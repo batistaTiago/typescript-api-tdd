@@ -1,4 +1,4 @@
-import { BTFindResourceHttpRequest } from "../../../../http/requests/BTFindResourceHttpRequest";
+import { BTFindResourceHttpRequest } from "../../../../framework/http/requests/BTFindResourceHttpRequest";
 
 export default class BTFindUserHttpRequest extends BTFindResourceHttpRequest {
     url(): string {

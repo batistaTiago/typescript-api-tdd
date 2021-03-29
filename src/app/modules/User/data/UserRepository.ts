@@ -1,4 +1,4 @@
-import Repository from "../../../persistency/Repository";
+import Repository from "../../../framework/persistency/Repository";
 import IUser from "./IUser";
 import IUserRepository from "./IUserRepository";
 const models = require('../../../models');
@@ -8,7 +8,7 @@ const models = require('../../../models');
 export default class UserRepository extends Repository implements IUserRepository {
 
     public table: string = 'Users';
-    public model = models.User;
+    public model = models.User; /* @TODO: nao pode depender do FW diretamente */
 
     public async findWithFilter(searchFor: string | undefined, fields: Array<String> = ['*']): Promise<IUser[]> {
         const output = this.queryBuilder();

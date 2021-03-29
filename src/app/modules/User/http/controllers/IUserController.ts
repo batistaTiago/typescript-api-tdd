@@ -1,5 +1,5 @@
-import BTHttpRequest from "../../../../http/requests/BTHttpRequest";
-import IBTHttpResponse from "../../../../http/requests/interfaces/IBTHttpResponse";
+import BTHttpRequest from "../../../../framework/http/requests/BTHttpRequest";
+import IBTHttpResponse from "../../../../framework/http/requests/interfaces/IBTHttpResponse";
 
 export default interface IUserController {
     getAll(request: BTHttpRequest): Promise<IBTHttpResponse>;

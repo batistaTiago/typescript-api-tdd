@@ -1,5 +1,5 @@
 import Repository from "../../../framework/persistency/Repository";
-import UserInterface from "./interfaces/BTUserInterface";
+import BTUserInterface from "./interfaces/BTUserInterface";
 import BTUserRepositoryInterface from "./interfaces/BTUserRepositoryInterface";
 const models = require('../../../models');
 
@@ -10,7 +10,7 @@ export default class UserRepository extends Repository implements BTUserReposito
     public table: string = 'Users';
     public model = models.User; /* @TODO: nao pode depender do FW diretamente */
 
-    public async findWithFilter(searchFor: string | undefined, fields: Array<String> = ['*']): Promise<UserInterface[]> {
+    public async findWithFilter(searchFor: string | undefined, fields: Array<String> = ['*']): Promise<BTUserInterface[]> {
         const output = this.queryBuilder();
 
         if (searchFor) {
@@ -21,11 +21,11 @@ export default class UserRepository extends Repository implements BTUserReposito
         return await output.select(fields);
     }
 
-    public async findAll(fields: Array<String> = ['*']): Promise<UserInterface[]> {
+    public async findAll(fields: Array<String> = ['*']): Promise<BTUserInterface[]> {
         return await this.queryBuilder().select(fields);
     }
 
-    public async findById(id: number, fields: Array<String> = ['*']): Promise<UserInterface | null> {
+    public async findById(id: number, fields: Array<String> = ['*']): Promise<BTUserInterface | null> {
         const users = await this.queryBuilder().where('id', id).select(fields);
         if (users.length) {
             return users[0];
@@ -34,8 +34,8 @@ export default class UserRepository extends Repository implements BTUserReposito
         return null;
     }
 
-    public async create(data: UserInterface) {
-        return await this.model.create(data) as UserInterface;
+    public async create(data: BTUserInterface) {
+        return await this.model.create(data) as BTUserInterface;
     }
 
     public async update(set, filters) {

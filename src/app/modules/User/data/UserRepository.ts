@@ -1,3 +1,4 @@
+import BTCacheInterface from "../../../framework/persistency/interfaces/BTCacheInterface";
 import Repository from "../../../framework/persistency/Repository";
 import BTUserInterface from "./interfaces/BTUserInterface";
 import BTUserRepositoryInterface from "./interfaces/BTUserRepositoryInterface";
@@ -9,6 +10,12 @@ export default class UserRepository extends Repository implements BTUserReposito
 
     public table: string = 'Users';
     public model = models.User; /* @TODO: nao pode depender do FW diretamente */
+    public cache: BTCacheInterface = new Cache();
+
+    public constructor(cache) {
+        super();
+        this.cache = cache;
+    }
 
     public async findWithFilter(searchFor: string | undefined, fields: Array<String> = ['*']): Promise<BTUserInterface[]> {
         const output = this.queryBuilder();

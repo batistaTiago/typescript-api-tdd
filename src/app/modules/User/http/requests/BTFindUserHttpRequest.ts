@@ -4,4 +4,8 @@ export default class BTFindUserHttpRequest extends BTFindResourceHttpRequest {
     url(): string {
         throw new Error("Method not implemented.");
     }
+
+    public authorize(): boolean {
+        return false;
+    }
 }

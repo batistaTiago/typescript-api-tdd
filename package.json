@@ -10,7 +10,8 @@
         "unit-tests": "SET NODE_ENV=test&&  mocha ./build/tests/unit/unit.test.js",
         "status-tests": "SET NODE_ENV=test&&  mocha ./build/tests/acceptance/api-status-acceptance.test.js",
         "acceptance-tests": "SET NODE_ENV=test&&  mocha ./build/tests/acceptance/user-acceptance.test.js",
-        "test": "SET NODE_ENV=test&& rm -rf build && tsc && mocha ./build/tests/unit/unit.test.js && mocha ./build/tests/acceptance/acceptance.test.js"
+        "test": "SET NODE_ENV=test&& rm -rf build && tsc && mocha ./build/tests/unit/unit.test.js && mocha ./build/tests/acceptance/acceptance.test.js",
+        "make:module": "node ./bin/make-module.js"
     },
     "author": "Tiago Batista",
     "license": "ISC",
